@@ -1,0 +1,2 @@
+include LICENSE README.rst AUTHORS.rst
+global-exclude *.pyc[co]
