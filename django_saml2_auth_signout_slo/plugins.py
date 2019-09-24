@@ -11,6 +11,11 @@ class SingleLogOutSignoutHandler(SignoutPlugin):
     @classmethod
     def signout(cls, request):
         """Logs the user out of the local system and redirects them to the SLO URL in the SAML Metadata"""
-        logout(request)
+        name_id = request.session['name_id']
         saml_client = _get_saml_client(utils.get_current_domain(request))
-        return saml_client.global_logout(request.user.username)
+        logout(request)
+        request.session.flush()
+
+        # from pysaml2/example/sp-repoze/sp.py
+        responses = saml_client.global_logout(name_id).items()
+        return responses[0]
