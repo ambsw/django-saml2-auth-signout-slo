@@ -1,8 +1,8 @@
 from django.contrib.auth import logout
-
 from django_saml2_auth import utils
 from django_saml2_auth.plugins import SignoutPlugin
 from django_saml2_auth.views import _get_saml_client
+from saml2.client_base import LogoutError
 
 
 class SingleLogOutSignoutHandler(SignoutPlugin):
@@ -16,6 +16,9 @@ class SingleLogOutSignoutHandler(SignoutPlugin):
         logout(request)
         request.session.flush()
 
-        # from pysaml2/example/sp-repoze/sp.py
-        responses = saml_client.global_logout(name_id).items()
-        return responses[0]
+        # from pysaml2/example/sp-wsgi/sp.py
+        try:
+            responses = saml_client.global_logout(name_id).items()
+            return responses[0]
+        except LogoutError:
+            pass
