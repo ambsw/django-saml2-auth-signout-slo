@@ -27,3 +27,41 @@ In settings.py:
             'SINGOUT': ['SLO'],
         }
     }
+
+# ADFS Notes
+
+There are several issues using this package with ADFS:
+
+ - ADFS does not provide a NameID by default.  NameID is required (at least by PySAML2) for SLO.
+ - ADFS does not expose an SLO endpoint by default.
+ 
+The following are one way to address these issues (but use at your own risk).  The Name ID strategy was taken from 
+[this article](https://blogs.msdn.microsoft.com/card/2010/02/17/name-identifiers-in-saml-assertions/).  The SLO 
+endpoint was taken from [this article](https://help.mulesoft.com/s/article/Configuring-ADFS-SLO-endpoint).  
+
+ - In your SAMLConfig, add the line:
+      
+       'NAME_ID_FORMAT': 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+       
+ - In your ADFS Claim Rules, add a custom rule ("Send Claims Using a Custom Rule"):
+
+       c:[Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"]
+       => add(
+           store = "_OpaqueIdStore",
+           types = ("http://mycompany/internal/persistentId"),
+           query = "{0};{1};{2}",
+           param = "ppid",
+           param = c.Value,
+           param = c.OriginalIssuer
+       );
+
+ - In your ADFS Claim Rules, add a Transform Rule:
+    - Incoming claim type:  `http://mycompany/internal/persistentId` (literally this, don't change mycompany)
+    - Outgoing claim type:  `NameID`
+    - Outgoing name ID format:  `Persistent Identifier`
+
+ - Under the Relaying Party Trust's `Properties` -> `Endpoints` tab, add a SAML Logout Endpoint:
+ 
+    - Binding:  `POST`
+    - Trusted URL:  Your ADFS endpoint, something like `https://<my.adfs.com>/adfs/ls`
+    - Response URL:  empty
