@@ -15,10 +15,10 @@ class AppConfig(apps.AppConfig):
 
         if 'SLO' in settings.SAML2_AUTH.get('PLUGINS', {}).get('SIGNOUT', []):
             # NameID is required
-            if settings.SAML2_AUTH.get('NAME_ID_FORMAT') in [None, 'None']:
+            if settings.SAML2_AUTH.get('NAME_ID_FORMAT', 'NOT SET') in [None, 'None']:
                 raise ImproperlyConfigured(
                     "django-saml2-auth-signout-slo requires a valid SAML2_AUTH.NAME_ID_FORMAT, not None"
                 )
 
             # cache the NameID in the session
-            signals.before_authenticated.attach(handlers.store_name_id)
+            signals.before_authenticated.connect(handlers.store_name_id)
