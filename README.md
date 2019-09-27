@@ -1,4 +1,5 @@
 # django-saml2-auth-signout-slo
+
 A plugin to support Single LogOff (SLO) in django-saml2-auth
 
 # Introduction
@@ -25,6 +26,11 @@ In settings.py:
         'PLUGINS': {
             # use this package in lieu of DEFAULT signout plugin 
             'SINGOUT': ['SLO'],
+        }
+        # django_saml2_auth doesn't support these natively so the package injects them
+        'SIGNOUT_SLO': {
+            'CERT': <tbd>
+            'KEY': <tbd>
         }
     }
 
@@ -70,3 +76,5 @@ endpoint was taken from [this article](https://help.mulesoft.com/s/article/Confi
     - Binding:  `POST`
     - Trusted URL:  Your ADFS endpoint, something like `https://<my.adfs.com>/adfs/ls`
     - Response URL:  empty
+    
+ - Under the Relaying Party Trust's `Properties` -> `Endpoints` tab

@@ -107,4 +107,4 @@ venv.bak/
 .idea
 
 # Test symlink
-tests/django_saml2_auth_singout_slo/*
+tests/django_saml2_auth_signout_slo/*
