@@ -1,7 +1,4 @@
 from django import apps
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
-from django_saml2_auth import signals, utils
 
 
 class AppConfig(apps.AppConfig):
@@ -11,6 +8,10 @@ class AppConfig(apps.AppConfig):
         # import plugins
         # noinspection PyUnresolvedReferences
         from . import plugins
+        # must import in the ready function to ensure app is loaded
+        from django.conf import settings
+        from django_saml2_auth import signals, handlers
+        from django.core.exceptions import ImproperlyConfigured
 
         if 'SLO' in settings.SAML2_AUTH.get('PLUGINS', {}).get('SIGNOUT', []):
             # NameID is required
@@ -20,4 +21,4 @@ class AppConfig(apps.AppConfig):
                 )
 
             # cache the NameID in the session
-            signals.before_authenticated.attach(utils.store_name_id)
+            signals.before_authenticated.attach(handlers.store_name_id)
