@@ -28,7 +28,12 @@ In settings.py:
         }
     }
 
-# ADFS Notes
+# Microsoft AD FS
+
+WARNING:  ADFS SLO will not work with unsigned requests.  This means that you must provide a key and a cert and upload 
+the cert to the ADFS Relaying Party Trust.  If you cannot -- or do not want to -- provide a certificate, see the 
+`-django-saml2-auth-signout-redirect` plugin.  Instead of a true Single SingOut, this plugin will redirect the user to
+the `idpinitiatedsignon` page, permitting the user to complete the signout manually. 
 
 There are several issues using this package with ADFS:
 

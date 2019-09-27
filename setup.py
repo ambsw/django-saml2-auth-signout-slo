@@ -22,7 +22,9 @@ setup(
     version=django_saml2_auth_signout_slo.__version__,
 
     description='Single LogOut (SLO) plugin for django_saml2_auth',
+    # requires unix line endings
     long_description=long_description,
+    long_description_content_type="text/markdown",
 
     url='https://github.com/ambsw/django-saml2-auth-signout-slo',
 

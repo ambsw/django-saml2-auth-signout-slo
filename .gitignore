@@ -105,3 +105,6 @@ venv.bak/
 
 # JetBrains IDEs
 .idea
+
+# Test symlink
+tests/django_saml2_auth_singout_slo/*
